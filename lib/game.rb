@@ -34,11 +34,13 @@ class Game
     return false
   end
 
+  # affichage des personnages vivants
   def show_players
     @human_player.show_state
     puts "le nombre de joueurs bots restants : #{@enemies.size}"
   end
 
+  # affichage du menu
   def menu
     puts "\nQuelle action veux-tu effectuer ?"
     print "a - chercher une meilleur arme\ns - chercher à se soigner\n"
@@ -51,42 +53,62 @@ class Game
   end
 
   def menu_choice(choice)
+    # si choix d'utilisateur est
     case choice
+    # a
     when "a"
+      # afficher tout ce qui est derriere puts
       puts "chercher une meilleur arme\ns - chercher à se soigner"
+      # personnage utilisateur appelle la fonction recherche d'arme
       @human_player.search_weapon
+      # afficher l'etat de la personnage utilisateur
       @human_player.show_state
     when "s"
+      # afficher tout ce qui est derriere puts
       puts "chercher à se soigner"
+      # personnage utilisateur appelle la fonction recherche de la pack de santé
       @human_player.search_health_pack
+      # afficher l'etat de la personnage utilisateur
       @human_player.show_state
     end
 
     if (choice.to_i.class.to_s == "Integer" && choice.to_i < @enemies.size && choice.to_i > -1)
-      #puts "attaquer #{@enemies[choice.to_i].name} a #{@enemies[choice.to_i].life_points} points de vie"
+      # personnage utilisateur attaque son ennemie indice du choix de l'utilisateur
       @human_player.attacks(@enemies[choice.to_i])
+      # affichage de l'etat de son ennemie
       @enemies[choice.to_i].show_state
-
+      # si le point de vie de son enemie courant est inferieur ou egal à 0
       if @enemies[choice.to_i].life_points <= 0
+        #enlever l'enemie courant
         killplayer(@enemies[choice.to_i])
       end
     end
   end
 
+  # fonction qui permet à tous les ennemies de l'utilisateur, de l'attaquer
   def enemies_attack
+    # pour 0 au nombre des ennemies
     for index_enemie in (0...@enemies.size)
+      # si le nombre de point de vie de l'ennemie est superieur strict à 0
       if (@human_player.life_points > 0)
+        # l'ennemie courant attaque l'utilisateur
         @enemies[index_enemie].attacks(@human_player)
+        # afficher l'etat du personnage utilisateur
         @human_player.show_state
+        #si non
       else
+        #fin du jeu
         endgame
         break
       end
     end
   end
 
+  # fonction fin du jeu
   def endgame
+    # afficher tout ce qui est derriere puts
     puts "La partie est finie"
+    # si le point de vie du personnage utilisateur est inferieurou égal à 0, afficher Loser ! Tu as perdu ! si non affciher BRAVO ! TU AS GAGNE !
     (@human_player.life_points <= 0) ? (puts "Loser ! Tu as perdu !") : (puts "BRAVO ! TU AS GAGNE !")
   end
 end
